@@ -13,6 +13,8 @@ This is a SvelteKit application called "positive.tech" that displays floating po
 - **Animation System**: Custom JavaScript animation using `requestAnimationFrame` for smooth 60fps movement
 - **Styling**: CSS-in-JS approach with scoped styles and responsive design
 - **State Management**: Svelte 5 `$state` runes for reactive message array
+- **Database**: Redis for message storage and retrieval
+- **AI Integration**: Gemini API for message filtering and validation
 
 ## Key Components
 
@@ -21,6 +23,28 @@ This is a SvelteKit application called "positive.tech" that displays floating po
 - **Animation Loop**: Continuous animation using `requestAnimationFrame` with constant velocity movement
 - **Message Lifecycle**: Three phases - fade-in, visible, fade-out with 60-frame transitions
 - **Dynamic Text Measurement**: Calculates message dimensions for proper positioning and collision detection
+- **Message Sources**: Fetches messages from Redis with fallback to hardcoded messages
+
+### API Endpoints
+- **`/api/filter-message`**: POST endpoint that filters user-submitted messages using Gemini API
+- **`/api/messages`**: GET endpoint that retrieves random messages from Redis storage
+
+### Redis Integration (`src/lib/redis.ts`)
+- **Message Storage**: Stores approved messages as JSON objects with metadata
+- **Random Picker**: Implements random multi-cached picker using Redis `SRANDMEMBERCOUNT`
+- **Fallback System**: Provides hardcoded fallback messages when Redis is unavailable
+
+## Environment Configuration
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+# Gemini API Configuration
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Redis Configuration  
+REDIS_URL=redis://localhost:6379
+```
 
 ## Development Commands
 

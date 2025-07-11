@@ -28,32 +28,52 @@
 	let isSubmitting = $state(false);
 	let submitMessage = $state('');
 	let submitMessageType: 'success' | 'error' | '' = $state('');
+	let availableMessages: string[] = $state([]);
 
-	const positiveMessages = [
-		'You are capable of amazing things',
-		'Every day is a new opportunity',
-		'Your potential is limitless',
-		'Believe in yourself',
-		'You make a difference',
-		'Today is full of possibilities',
-		'You are stronger than you think',
-		'Your kindness matters',
-		'You have unique gifts to share',
-		'Progress, not perfection',
-		'You are worthy of good things',
-		'Your dreams are valid',
-		'You can overcome any challenge',
-		'You bring light to the world',
-		'Every step forward counts',
-		'You are exactly where you need to be',
-		'Your efforts are making a difference',
-		'You have the power to create change',
-		'You are loved and appreciated',
-		'Tomorrow is full of promise'
+	const fallbackMessages = [
+		// 'You are capable of amazing things',
+		// 'Every day is a new opportunity',
+		// 'Your potential is limitless',
+		// 'Believe in yourself',
+		// 'You make a difference',
+		// 'Today is full of possibilities',
+		// 'You are stronger than you think',
+		// 'Your kindness matters',
+		// 'You have unique gifts to share',
+		// 'Progress, not perfection',
+		// 'You are worthy of good things',
+		// 'Your dreams are valid',
+		// 'You can overcome any challenge',
+		// 'You bring light to the world',
+		// 'Every step forward counts',
+		// 'You are exactly where you need to be',
+		// 'Your efforts are making a difference',
+		// 'You have the power to create change',
+		// 'You are loved and appreciated',
+		// 'Tomorrow is full of promise'
 	];
 
+	async function loadMessages() {
+		try {
+			const response = await fetch('/api/messages?count=20');
+			if (response.ok) {
+				const data = await response.json();
+				availableMessages = data.messages;
+			} else {
+				console.error('Failed to load messages from API');
+				availableMessages = fallbackMessages;
+			}
+		} catch (error) {
+			console.error('Error loading messages:', error);
+			availableMessages = fallbackMessages;
+		}
+	}
+
 	function getRandomMessage(): string {
-		return positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
+		if (availableMessages.length === 0) {
+			return fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
+		}
+		return availableMessages[Math.floor(Math.random() * availableMessages.length)];
 	}
 
 	function calculateMessageDimensions(text: string): { width: number; height: number } {
@@ -242,6 +262,11 @@
 	}
 
 	onMount(() => {
+		loadMessages();
+		
+		// Reload messages every 5 minutes to get fresh content
+		const messageReloadInterval = setInterval(loadMessages, 5 * 1000);
+		
 		for (let i = 0; i < maxMessages; i++) {
 			messages.push(createMessage());
 		}
@@ -251,6 +276,7 @@
 			if (animationFrame) {
 				cancelAnimationFrame(animationFrame);
 			}
+			clearInterval(messageReloadInterval);
 		};
 	});
 </script>
