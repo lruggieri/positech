@@ -25,6 +25,9 @@
 	let animationFrame: number;
 	let sidePanelOpen = $state(false);
 	let messageText = $state('');
+	let isSubmitting = $state(false);
+	let submitMessage = $state('');
+	let submitMessageType: 'success' | 'error' | '' = $state('');
 
 	const positiveMessages = [
 		'You are capable of amazing things',
@@ -131,6 +134,57 @@
 			velocityX: velocityX,
 			velocityY: velocityY
 		};
+	}
+
+	async function submitEcho() {
+		if (!messageText.trim() || isSubmitting) return;
+		
+		isSubmitting = true;
+		submitMessage = '';
+		submitMessageType = '';
+
+		try {
+			const response = await fetch('/api/filter-message', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ message: messageText.trim() }),
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to submit message');
+			}
+
+			if (result.isPositive) {
+				submitMessage = 'Your echo has been shared! Thank you for spreading positivity.';
+				submitMessageType = 'success';
+				
+				// Add the message to the floating messages immediately
+				const userMessage = createMessage();
+				userMessage.text = messageText.trim();
+				messages = [...messages, userMessage];
+				
+				messageText = '';
+			} else {
+				submitMessage = result.reason || 'Your message could not be shared. Please try a more positive message.';
+				submitMessageType = 'error';
+			}
+		} catch (error) {
+			console.error('Error submitting message:', error);
+			submitMessage = 'Sorry, something went wrong. Please try again.';
+			submitMessageType = 'error';
+		} finally {
+			isSubmitting = false;
+			
+			// Clear the message after 5 seconds
+			setTimeout(() => {
+				submitMessage = '';
+				submitMessageType = '';
+			}, 5000);
+		}
 	}
 
 	function updateMessages() {
@@ -254,7 +308,19 @@
 					rows="4"
 				></textarea>
 				<div class="character-count">{messageText.length}/150</div>
-				<button class="submit-button" disabled={messageText.trim().length === 0}>Share Echo</button>
+				<button 
+					class="submit-button" 
+					disabled={messageText.trim().length === 0 || isSubmitting}
+					onclick={submitEcho}
+				>
+					{isSubmitting ? 'Sharing...' : 'Share Echo'}
+				</button>
+				
+				{#if submitMessage}
+					<div class="submit-message" class:success={submitMessageType === 'success'} class:error={submitMessageType === 'error'}>
+						{submitMessage}
+					</div>
+				{/if}
 			</div>
 
 			<div class="login-section">
@@ -496,6 +562,28 @@
 	.submit-button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	.submit-message {
+		margin-top: 15px;
+		padding: 12px 16px;
+		border-radius: 8px;
+		font-size: 0.9rem;
+		line-height: 1.4;
+		text-align: center;
+		transition: all 0.3s ease;
+	}
+
+	.submit-message.success {
+		background: rgba(34, 197, 94, 0.1);
+		border: 1px solid rgba(34, 197, 94, 0.2);
+		color: rgba(21, 128, 61, 0.9);
+	}
+
+	.submit-message.error {
+		background: rgba(239, 68, 68, 0.1);
+		border: 1px solid rgba(239, 68, 68, 0.2);
+		color: rgba(153, 27, 27, 0.9);
 	}
 
 	.login-section {

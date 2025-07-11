@@ -11,6 +11,9 @@ Echos have to be filtered. Spam, vulgarity, length. Strictly positive unambiguou
 
 Maybe we can initially use an LLM on the fight. If the service starts to keep traction, we might need to change approach.
 
+### Filtering
+We can use the [LLM instruction](llm-instruction.md) prompt to any LLM as instruction to follow to classify an input message.
+
 ### Picker
 How do we pick messages to be displayed?
 
