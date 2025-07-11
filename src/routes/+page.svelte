@@ -30,27 +30,27 @@
 	let submitMessageType: 'success' | 'error' | '' = $state('');
 	let availableMessages: string[] = $state([]);
 
-	const fallbackMessages = [
-		// 'You are capable of amazing things',
-		// 'Every day is a new opportunity',
-		// 'Your potential is limitless',
-		// 'Believe in yourself',
-		// 'You make a difference',
-		// 'Today is full of possibilities',
-		// 'You are stronger than you think',
-		// 'Your kindness matters',
-		// 'You have unique gifts to share',
-		// 'Progress, not perfection',
-		// 'You are worthy of good things',
-		// 'Your dreams are valid',
-		// 'You can overcome any challenge',
-		// 'You bring light to the world',
-		// 'Every step forward counts',
-		// 'You are exactly where you need to be',
-		// 'Your efforts are making a difference',
-		// 'You have the power to create change',
-		// 'You are loved and appreciated',
-		// 'Tomorrow is full of promise'
+	const fallbackMessages: string[] = [
+		'You are capable of amazing things',
+		'Every day is a new opportunity',
+		'Your potential is limitless',
+		'Believe in yourself',
+		'You make a difference',
+		'Today is full of possibilities',
+		'You are stronger than you think',
+		'Your kindness matters',
+		'You have unique gifts to share',
+		'Progress, not perfection',
+		'You are worthy of good things',
+		'Your dreams are valid',
+		'You can overcome any challenge',
+		'You bring light to the world',
+		'Every step forward counts',
+		'You are exactly where you need to be',
+		'Your efforts are making a difference',
+		'You have the power to create change',
+		'You are loved and appreciated',
+		'Tomorrow is full of promise'
 	];
 
 	async function loadMessages() {
@@ -58,7 +58,11 @@
 			const response = await fetch('/api/messages?count=20');
 			if (response.ok) {
 				const data = await response.json();
-				availableMessages = data.messages;
+				if (data.messages && data.messages.length > 0) {
+					availableMessages = data.messages;
+				} else {
+					availableMessages = fallbackMessages;
+				}
 			} else {
 				console.error('Failed to load messages from API');
 				availableMessages = fallbackMessages;
@@ -262,15 +266,19 @@
 	}
 
 	onMount(() => {
-		loadMessages();
+		const initializeApp = async () => {
+			await loadMessages();
+			
+			for (let i = 0; i < maxMessages; i++) {
+				messages.push(createMessage());
+			}
+			updateMessages();
+		};
+
+		initializeApp();
 		
 		// Reload messages every 5 minutes to get fresh content
-		const messageReloadInterval = setInterval(loadMessages, 5 * 1000);
-		
-		for (let i = 0; i < maxMessages; i++) {
-			messages.push(createMessage());
-		}
-		updateMessages();
+		const messageReloadInterval = setInterval(loadMessages, 5 * 60 * 1000);
 
 		return () => {
 			if (animationFrame) {
