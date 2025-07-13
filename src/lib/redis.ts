@@ -22,7 +22,7 @@ export async function getRedisClient() {
 
 export async function closeRedisClient() {
 	if (client) {
-		await client.disconnect();
+		await client.destroy();
 		client = null;
 	}
 }
