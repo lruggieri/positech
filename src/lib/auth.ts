@@ -25,15 +25,13 @@ export function verifyToken(token: string): User | null {
 
 export function getUserFromRequest(request: Request): User | null {
 	const cookieHeader = request.headers.get('cookie');
-	console.log('Cookie header:', cookieHeader);
 	if (!cookieHeader) return null;
 
 	const cookies = parse(cookieHeader);
 	const token = cookies['auth-token'];
-	console.log('Auth token:', token ? 'Found' : 'Not found');
 	if (!token) return null;
 
 	const user = verifyToken(token);
-	console.log('Verified user:', user ? 'Success' : 'Failed');
+
 	return user;
 }

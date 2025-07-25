@@ -200,6 +200,13 @@
 			const result = await response.json();
 
 			if (!response.ok) {
+				if (response.status === 429) {
+					// Rate limit exceeded
+					submitMessage = result.error || 'You have reached your daily limit of 10 messages. Please try again tomorrow.';
+					submitMessageType = 'error';
+					isSubmitting = false;
+					return;
+				}
 				throw new Error(result.error || 'Failed to submit message');
 			}
 

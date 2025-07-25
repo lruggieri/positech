@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { GEMINI_API_KEY } from '$env/static/private';
 import type { RequestHandler } from './$types';
-import { storeMessage } from '$lib/redis';
+import { storeMessage, checkRateLimit, incrementMessageCount } from '$lib/redis';
 import { getUserFromRequest } from '$lib/auth';
 
 interface FilterRequest {
@@ -82,12 +82,28 @@ b) The JSON object must have:
 
 * Apply logic objectively without making assumptions about intention beyond what is stated.`;
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 	try {
 		const { message, countryCode }: FilterRequest = await request.json();
 
 		if (!message || message.trim().length === 0) {
 			return json({ error: 'Message is required' }, { status: 400 });
+		}
+
+		// Extract user info for rate limiting
+		const user = getUserFromRequest(request);
+		const userEmail = user?.email;
+		const userIP = getClientAddress();
+
+		// Check rate limit before processing
+		const rateLimitResult = await checkRateLimit(userEmail, userIP);
+		if (!rateLimitResult.allowed) {
+			return json({ 
+				error: 'Rate limit exceeded. You can send up to 10 messages per day.',
+				rateLimitExceeded: true,
+				remaining: rateLimitResult.remaining,
+				resetTime: rateLimitResult.resetTime
+			}, { status: 429 });
 		}
 
 		console.log(GEMINI_API_KEY);
@@ -155,11 +171,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Store message in Redis if it's positive
 		if (filterResult.isPositive) {
 			try {
-				// Extract user from cookie if available
-				const user = getUserFromRequest(request);
-				const userEmail = user?.email;
-
 				await storeMessage(message.trim(), userEmail, countryCode);
+				// Increment rate limit counter after successful storage
+				await incrementMessageCount(userEmail, userIP);
 			} catch (redisError) {
 				console.error('Failed to store message in Redis:', redisError);
 				// Don't fail the request if Redis fails, just log it
