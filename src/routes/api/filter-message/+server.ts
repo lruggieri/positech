@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import { GEMINI_API_KEY } from '$env/static/private';
 import type { RequestHandler } from './$types';
 import { storeMessage } from '$lib/redis';
+import { getUserFromRequest } from '$lib/auth';
 
 interface FilterRequest {
 	message: string;
@@ -88,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Message is required' }, { status: 400 });
 		}
 
-		console.log(GEMINI_API_KEY)
+		console.log(GEMINI_API_KEY);
 		if (!GEMINI_API_KEY) {
 			return json({ error: 'Gemini API key not configured' }, { status: 500 });
 		}
@@ -99,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				method: 'POST',
 				headers: {
 					'x-goog-api-key': GEMINI_API_KEY,
-					'Content-Type': 'application/json',
+					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
 					system_instruction: {
@@ -117,8 +118,8 @@ export const POST: RequestHandler = async ({ request }) => {
 								}
 							]
 						}
-					],
-				}),
+					]
+				})
 			}
 		);
 
@@ -145,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				throw new Error('No JSON found in response');
 			}
 			filterResult = JSON.parse(jsonMatch[0]);
-		} catch (parseError) {
+		} catch {
 			console.error('Failed to parse Gemini response:', generatedText);
 			return json({ error: 'Failed to parse AI response' }, { status: 500 });
 		}
@@ -153,7 +154,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Store message in Redis if it's positive
 		if (filterResult.isPositive) {
 			try {
-				await storeMessage(message.trim());
+				// Extract user from cookie if available
+				const user = getUserFromRequest(request);
+				const userEmail = user?.email;
+
+				await storeMessage(message.trim(), userEmail);
 			} catch (redisError) {
 				console.error('Failed to store message in Redis:', redisError);
 				// Don't fail the request if Redis fails, just log it

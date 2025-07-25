@@ -19,6 +19,7 @@ This is a SvelteKit application called "positive.tech" that displays floating po
 ## Key Components
 
 ### Message System (`src/routes/+page.svelte`)
+
 - **Message Interface**: Defines message properties including position, animation phase, and velocity
 - **Animation Loop**: Continuous animation using `requestAnimationFrame` with constant velocity movement
 - **Message Lifecycle**: Three phases - fade-in, visible, fade-out with 60-frame transitions
@@ -26,10 +27,12 @@ This is a SvelteKit application called "positive.tech" that displays floating po
 - **Message Sources**: Fetches messages from Redis with fallback to hardcoded messages
 
 ### API Endpoints
+
 - **`/api/filter-message`**: POST endpoint that filters user-submitted messages using Gemini API
 - **`/api/messages`**: GET endpoint that retrieves random messages from Redis storage
 
 ### Redis Integration (`src/lib/redis.ts`)
+
 - **Message Storage**: Stores approved messages as JSON objects with metadata
 - **Random Picker**: Implements random multi-cached picker using Redis `SRANDMEMBERCOUNT`
 - **Fallback System**: Provides hardcoded fallback messages when Redis is unavailable
@@ -42,7 +45,7 @@ Copy `.env.example` to `.env` and configure:
 # Gemini API Configuration
 GEMINI_API_KEY=your_gemini_api_key_here
 
-# Redis Configuration  
+# Redis Configuration
 REDIS_URL=redis://localhost:6379
 ```
 
