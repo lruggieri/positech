@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { getCountryCode } from '$lib/geolocation';
 
 	let { data } = $props();
 
@@ -178,12 +179,18 @@
 		submitMessageType = '';
 
 		try {
+			// Get country code from geolocation service
+			const countryCode = await getCountryCode();
+			
 			const response = await fetch('/api/filter-message', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ message: messageText.trim() })
+				body: JSON.stringify({ 
+					message: messageText.trim(),
+					countryCode 
+				})
 			});
 
 			const result = await response.json();

@@ -6,6 +6,7 @@ import { getUserFromRequest } from '$lib/auth';
 
 interface FilterRequest {
 	message: string;
+	countryCode?: string;
 }
 
 interface FilterResponse {
@@ -83,7 +84,7 @@ b) The JSON object must have:
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const { message }: FilterRequest = await request.json();
+		const { message, countryCode }: FilterRequest = await request.json();
 
 		if (!message || message.trim().length === 0) {
 			return json({ error: 'Message is required' }, { status: 400 });
@@ -158,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const user = getUserFromRequest(request);
 				const userEmail = user?.email;
 
-				await storeMessage(message.trim(), userEmail);
+				await storeMessage(message.trim(), userEmail, countryCode);
 			} catch (redisError) {
 				console.error('Failed to store message in Redis:', redisError);
 				// Don't fail the request if Redis fails, just log it
