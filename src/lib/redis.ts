@@ -57,7 +57,12 @@ export async function storeMessage(message: string, userEmail?: string, countryC
 	await redis.sAdd(MESSAGES_SET_KEY, JSON.stringify(storedMessage));
 }
 
-export async function getRandomMessages(count: number = 10): Promise<string[]> {
+export interface MessageWithCountry {
+	msg: string;
+	country?: string;
+}
+
+export async function getRandomMessages(count: number = 10): Promise<MessageWithCountry[]> {
 	const redis = await getRedisClient();
 	const messages = await redis.sRandMemberCount(MESSAGES_SET_KEY, count);
 
@@ -71,9 +76,12 @@ export async function getRandomMessages(count: number = 10): Promise<string[]> {
 	return messages.map((msg: string) => {
 		try {
 			const parsed: StoredMessage = JSON.parse(msg);
-			return parsed.msg;
+			return {
+				msg: parsed.msg,
+				country: parsed.country
+			};
 		} catch {
-			return msg; // Fallback for non-JSON messages
+			return { msg }; // Fallback for non-JSON messages
 		}
 	});
 }

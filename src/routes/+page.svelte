@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getCountryCode } from '$lib/geolocation';
+	import { getCountryFlag } from '$lib/flags';
 
 	let { data } = $props();
 
@@ -21,6 +22,7 @@
 		height: number;
 		velocityX: number;
 		velocityY: number;
+		country?: string;
 	}
 
 	let messages: Message[] = $state([]);
@@ -31,7 +33,7 @@
 	let isSubmitting = $state(false);
 	let submitMessage = $state('');
 	let submitMessageType: 'success' | 'error' | '' = $state('');
-	let availableMessages: string[] = $state([]);
+	let availableMessages: Array<{msg: string, country?: string}> = $state([]);
 
 	const user = $derived(data.user);
 
@@ -72,11 +74,11 @@
 				if (data.messages && data.messages.length > 0) {
 					availableMessages = data.messages;
 				} else {
-					availableMessages = fallbackMessages;
+					availableMessages = fallbackMessages.map(msg => ({ msg }));
 				}
 			} else {
 				console.error('Failed to load messages from API');
-				availableMessages = fallbackMessages;
+				availableMessages = fallbackMessages.map(msg => ({ msg }));
 			}
 		} catch (error) {
 			console.error('Error loading messages:', error);
@@ -84,9 +86,9 @@
 		}
 	}
 
-	function getRandomMessage(): string {
+	function getRandomMessage(): {msg: string, country?: string} {
 		if (availableMessages.length === 0) {
-			return fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
+			return { msg: fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)] };
 		}
 		return availableMessages[Math.floor(Math.random() * availableMessages.length)];
 	}
@@ -115,7 +117,8 @@
 	}
 
 	function createMessage(): Message {
-		const text = getRandomMessage();
+		const messageData = getRandomMessage();
+		const text = messageData.msg;
 		const dimensions = calculateMessageDimensions(text);
 		const side = Math.floor(Math.random() * 4);
 		let startX: number, startY: number, endX: number, endY: number;
@@ -167,7 +170,8 @@
 			width: dimensions.width,
 			height: dimensions.height,
 			velocityX: velocityX,
-			velocityY: velocityY
+			velocityY: velocityY,
+			country: messageData.country
 		};
 	}
 
@@ -353,6 +357,9 @@
 				"
 			>
 				{message.text}
+				{#if message.country}
+					<span class="country-flag">{getCountryFlag(message.country)}</span>
+				{/if}
 			</div>
 		{/each}
 	</div>
@@ -508,11 +515,21 @@
 		backdrop-filter: blur(10px);
 		border: 1px solid rgba(173, 216, 230, 0.3);
 		white-space: nowrap;
-		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-		transition: opacity 0.3s ease;
-		max-width: 300px;
-		text-align: center;
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	}
+
+	.country-flag {
+		position: absolute;
+		top: -8px;
+		right: -8px;
+		font-size: 0.8rem;
+		background: rgba(255, 255, 255, 0.9);
+		border-radius: 50%;
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
 	.side-panel-trigger {
