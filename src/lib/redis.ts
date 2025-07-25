@@ -66,8 +66,6 @@ export async function getRandomMessages(count: number = 10): Promise<MessageWith
 	const redis = await getRedisClient();
 	const messages = await redis.sRandMemberCount(MESSAGES_SET_KEY, count);
 
-	console.log('messages', messages);
-
 	if (!messages || messages.length === 0) {
 		// Return fallback messages if Redis is empty
 		return [];
