@@ -18,16 +18,16 @@
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
-	<title>Positech - Echoes of Positivity | Share Inspiring Messages Worldwide</title>
-	<meta name="title" content="Positech - Echoes of Positivity | Share Inspiring Messages Worldwide" />
-	<meta name="description" content="Discover and share positive messages from around the world. Watch beautiful floating affirmations, create your own inspiring echoes, and join a global community spreading positivity and wellness." />
+	<title>Positech - Share Positive Messages & Affirmations</title>
+	<meta name="title" content="Positech - Share Positive Messages & Affirmations" />
+	<meta name="description" content="Share positive messages and affirmations with the world. Create floating inspirational quotes and join a global community spreading positivity." />
 	<meta name="keywords" content="positive messages, affirmations, motivation, inspiration, wellness, mental health, positivity, global community, floating messages, echoes, mindfulness, self-care, encouragement" />
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://positech.org" />
-	<meta property="og:title" content="Positech - Echoes of Positivity | Share Inspiring Messages Worldwide" />
-	<meta property="og:description" content="Discover and share positive messages from around the world. Watch beautiful floating affirmations, create your own inspiring echoes, and join a global community spreading positivity and wellness." />
+	<meta property="og:url" content="https://positech.org/" />
+	<meta property="og:title" content="Positech - Share Positive Messages & Affirmations" />
+	<meta property="og:description" content="Share positive messages and affirmations with the world. Create floating inspirational quotes and join a global community spreading positivity." />
 	<meta property="og:image" content="https://positech.org/favicon.svg" />
 	<meta property="og:image:alt" content="Positech - Beautiful floating positive messages and affirmations" />
 	<meta property="og:site_name" content="Positech" />
@@ -35,9 +35,9 @@
 	
 	<!-- Twitter -->
 	<meta property="twitter:card" content="summary_large_image" />
-	<meta property="twitter:url" content="https://positech.org" />
-	<meta property="twitter:title" content="Positech - Echoes of Positivity | Share Inspiring Messages Worldwide" />
-	<meta property="twitter:description" content="Discover and share positive messages from around the world. Watch beautiful floating affirmations, create your own inspiring echoes, and join a global community spreading positivity and wellness." />
+	<meta property="twitter:url" content="https://positech.org/" />
+	<meta property="twitter:title" content="Positech - Share Positive Messages & Affirmations" />
+	<meta property="twitter:description" content="Share positive messages and affirmations with the world. Create floating inspirational quotes and join a global community spreading positivity." />
 	<meta property="twitter:image" content="https://positech.org/favicon.svg" />
 	<meta property="twitter:image:alt" content="Positech - Beautiful floating positive messages and affirmations" />
 	

@@ -561,19 +561,24 @@
 		overflow: hidden;
 	}
 
-	.title {
+	header {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		font-size: 4rem;
+		text-align: center;
+		z-index: 1;
+		max-width: 90%;
+	}
+
+	.title {
+		font-size: 3rem;
 		font-weight: 300;
 		color: rgba(100, 150, 200, 0.8);
-		text-align: center;
-		margin: 0;
-		z-index: 1;
+		margin: 0 0 1rem 0;
 		text-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-		letter-spacing: 0.1em;
+		letter-spacing: 0.05em;
+		line-height: 1.2;
 	}
 
 	.messages-container {
@@ -931,7 +936,8 @@
 
 	@media (max-width: 768px) {
 		.title {
-			font-size: 2.5rem;
+			font-size: 2rem;
+			margin-bottom: 0.5rem;
 		}
 
 		.floating-message {

@@ -10,7 +10,7 @@ export default defineConfig({
 		port: 8080
 	},
 	build: {
-		minify: 'terser',
+		minify: 'esbuild',
 		cssMinify: true,
 		rollupOptions: {
 			output: {
