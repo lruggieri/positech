@@ -1,17 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		// Register service worker for better caching
+		// Unregister any existing service worker to prevent caching issues
 		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/sw.js')
-				.then((registration) => {
-					console.log('SW registered: ', registration);
-				})
-				.catch((registrationError) => {
-					console.log('SW registration failed: ', registrationError);
-				});
+			navigator.serviceWorker.getRegistrations().then(function(registrations) {
+				for(let registration of registrations) {
+					registration.unregister();
+					console.log('Service worker unregistered');
+				}
+			});
 		}
 	});
 </script>
