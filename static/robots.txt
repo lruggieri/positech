@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://positech.org/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Block access to admin/internal paths (if any exist in the future)
+Disallow: /admin/
+Disallow: /.env
+Disallow: /api/auth/

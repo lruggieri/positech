@@ -38,10 +38,12 @@
 
 	const user = $derived(data.user);
 
-	// Debug logging
+	// Debug logging (remove in production)
 	$effect(() => {
-		console.log('User data:', user);
-		console.log('Full data:', data);
+		if (import.meta.env.DEV) {
+			console.log('User data:', user);
+			console.log('Full data:', data);
+		}
 	});
 
 	const fallbackMessages: string[] = [
@@ -78,11 +80,15 @@
 					availableMessages = fallbackMessages.map(msg => ({ msg }));
 				}
 			} else {
-				console.error('Failed to load messages from API');
+				if (import.meta.env.DEV) {
+					console.error('Failed to load messages from API');
+				}
 				availableMessages = fallbackMessages.map(msg => ({ msg }));
 			}
 		} catch (error) {
-			console.error('Error loading messages:', error);
+			if (import.meta.env.DEV) {
+				console.error('Error loading messages:', error);
+			}
 			availableMessages = fallbackMessages.map(msg => ({ msg }));
 		}
 	}
@@ -227,7 +233,9 @@
 				submitMessageType = 'error';
 			}
 		} catch (error) {
-			console.error('Error submitting message:', error);
+			if (import.meta.env.DEV) {
+				console.error('Error submitting message:', error);
+			}
 			submitMessage = 'Sorry, something went wrong. Please try again.';
 			submitMessageType = 'error';
 		} finally {
@@ -249,7 +257,9 @@
 			// Reload the page to update the user state
 			window.location.reload();
 		} catch (error) {
-			console.error('Logout error:', error);
+			if (import.meta.env.DEV) {
+				console.error('Logout error:', error);
+			}
 		}
 	}
 
@@ -335,14 +345,16 @@
 </script>
 
 <main>
-	<h1 class="title">Echoes</h1>
+	<header>
+		<h1 class="title">Echoes</h1>
+	</header>
 
 	<div class="top-right-controls">
 		<ThemeSelector />
 		<button
 			class="side-panel-trigger"
 			onclick={() => (sidePanelOpen = !sidePanelOpen)}
-			aria-label="Open side panel"
+			aria-label="Open side panel to add your positive message"
 		>
 			<svg
 				width="24"
@@ -351,6 +363,8 @@
 				fill="none"
 				stroke="currentColor"
 				stroke-width="2"
+				role="img"
+				aria-label="Plus icon"
 			>
 				<path d="M12 5v14M5 12h14" />
 			</svg>
@@ -365,7 +379,7 @@
 			class="icon-link"
 			aria-label="View source code on GitHub"
 		>
-			<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="GitHub logo">
 				<path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
 			</svg>
 		</a>
@@ -374,9 +388,9 @@
 			target="_blank"
 			rel="noopener noreferrer"
 			class="icon-link coffee-link"
-			aria-label="Buy me a coffee"
+			aria-label="Buy me a coffee to support this project"
 		>
-			<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Coffee cup icon">
 				<path d="M20 3H4a1 1 0 0 0-1 1v8a8 8 0 0 0 8 8h2a8 8 0 0 0 8-8V4a1 1 0 0 0-1-1zM5 5h14v7a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6V5z"/>
 				<path d="M7 7h10v2H7zM7 10h6v2H7z"/>
 			</svg>
@@ -401,13 +415,13 @@
 		{/each}
 	</div>
 
-	<div class="side-panel" class:open={sidePanelOpen}>
-		<div class="side-panel-header">
+	<aside class="side-panel" class:open={sidePanelOpen} aria-label="Message submission panel">
+		<header class="side-panel-header">
 			<h2>Add Your Echo</h2>
 			<button
 				class="close-button"
 				onclick={() => (sidePanelOpen = false)}
-				aria-label="Close side panel"
+				aria-label="Close message submission panel"
 			>
 				<svg
 					width="20"
@@ -416,23 +430,28 @@
 					fill="none"
 					stroke="currentColor"
 					stroke-width="2"
+					role="img"
+					aria-label="Close icon"
 				>
 					<path d="M18 6L6 18M6 6l12 12" />
 				</svg>
 			</button>
-		</div>
+		</header>
 
 		<div class="side-panel-content">
-			<div class="message-form-section">
+			<section class="message-form-section">
 				<h3>Share a positive message</h3>
+				<label for="message-input" class="visually-hidden">Your positive message</label>
 				<textarea
+					id="message-input"
 					bind:value={messageText}
 					placeholder="Write your positive message here..."
 					class="message-input"
 					maxlength="150"
 					rows="4"
+					aria-describedby="character-count submit-message"
 				></textarea>
-				<div class="character-count">{messageText.length}/150</div>
+				<div id="character-count" class="character-count">{messageText.length}/150</div>
 				<button
 					class="submit-button"
 					disabled={messageText.trim().length === 0 || isSubmitting}
@@ -443,14 +462,17 @@
 
 				{#if submitMessage}
 					<div
+						id="submit-message"
 						class="submit-message"
 						class:success={submitMessageType === 'success'}
 						class:error={submitMessageType === 'error'}
+						role="alert"
+						aria-live="polite"
 					>
 						{submitMessage}
 					</div>
 				{/if}
-			</div>
+			</section>
 
 			{#if !user}
 				<div class="login-section">
@@ -493,7 +515,7 @@
 				</div>
 			{/if}
 		</div>
-	</div>
+	</aside>
 
 	{#if sidePanelOpen}
 		<div class="side-panel-overlay" onclick={() => (sidePanelOpen = false)}></div>
@@ -518,6 +540,18 @@
 		overflow: hidden;
 		background: var(--theme-background);
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	}
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 
 	main {

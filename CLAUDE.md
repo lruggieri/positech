@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a SvelteKit application called "positive.tech" that displays floating positive messages across the screen. The app creates an animated background with positive affirmations that fade in and move across the viewport.
 
+**IMPORTANT: The production domain is positech.org, not positive.tech. Always use positech.org for all URLs, canonical links, and SEO references.**
+
 ## Architecture
 
 - **Framework**: SvelteKit with TypeScript

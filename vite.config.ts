@@ -8,5 +8,19 @@ export default defineConfig({
 	},
 	preview: {
 		port: 8080
+	},
+	build: {
+		minify: 'terser',
+		cssMinify: true,
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vendor: ['svelte']
+				}
+			}
+		}
+	},
+	optimizeDeps: {
+		include: ['cookie', 'jsonwebtoken']
 	}
 });

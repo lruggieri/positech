@@ -4,7 +4,36 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<!-- Basic SEO Meta Tags -->
+		<meta name="robots" content="index, follow" />
+		<meta name="googlebot" content="index, follow" />
+		<meta name="author" content="Positech" />
+		<link rel="canonical" href="https://positech.org" />
+		
+		<!-- Preconnect to external domains for performance -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		
 		%sveltekit.head%
+		
+		<!-- JSON-LD Structured Data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"name": "Positech - Echoes of Positivity",
+			"alternateName": "Echoes",
+			"url": "https://positech.org",
+			"description": "Share and discover positive messages from around the world. Create beautiful floating affirmations and spread positivity globally.",
+			"author": {
+				"@type": "Person",
+				"name": "Luca Ruggieri"
+			},
+			"inLanguage": "en-US",
+			"keywords": "positive messages, affirmations, motivation, inspiration, wellness, mental health, positivity, global community"
+		}
+		</script>
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>
