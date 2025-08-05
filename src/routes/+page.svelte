@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { getCountryCode } from '$lib/geolocation';
 	import { getCountryFlag } from '$lib/flags';
+	import ThemeSelector from '$lib/components/ThemeSelector.svelte';
 
 	let { data } = $props();
 
@@ -336,22 +337,25 @@
 <main>
 	<h1 class="title">Echoes</h1>
 
-	<button
-		class="side-panel-trigger"
-		onclick={() => (sidePanelOpen = !sidePanelOpen)}
-		aria-label="Open side panel"
-	>
-		<svg
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
+	<div class="top-right-controls">
+		<ThemeSelector />
+		<button
+			class="side-panel-trigger"
+			onclick={() => (sidePanelOpen = !sidePanelOpen)}
+			aria-label="Open side panel"
 		>
-			<path d="M12 5v14M5 12h14" />
-		</svg>
-	</button>
+			<svg
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path d="M12 5v14M5 12h14" />
+			</svg>
+		</button>
+	</div>
 
 	<div class="messages-container">
 		{#each messages as message (message.id)}
@@ -471,12 +475,22 @@
 </main>
 
 <style>
+	:global(:root) {
+		--theme-primary: rgba(70, 130, 180, 0.9);
+		--theme-primary-light: rgba(173, 216, 230, 0.2);
+		--theme-primary-dark: rgba(70, 130, 180, 1);
+		--theme-text: rgba(70, 130, 180, 0.9);
+		--theme-background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+		--theme-message-background: rgba(173, 216, 230, 0.2);
+		--theme-message-border: rgba(173, 216, 230, 0.3);
+	}
+
 	:global(body) {
 		margin: 0;
 		padding: 0;
 		height: 100vh;
 		overflow: hidden;
-		background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+		background: var(--theme-background);
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
@@ -513,14 +527,14 @@
 
 	.floating-message {
 		position: absolute;
-		color: rgba(70, 130, 180, 0.9);
+		color: var(--theme-text);
 		font-size: 1.1rem;
 		font-weight: 400;
 		padding: 12px 20px;
-		background: rgba(173, 216, 230, 0.2);
+		background: var(--theme-message-background);
 		border-radius: 25px;
 		backdrop-filter: blur(10px);
-		border: 1px solid rgba(173, 216, 230, 0.3);
+		border: 1px solid var(--theme-message-border);
 		white-space: nowrap;
 	}
 
@@ -539,20 +553,26 @@
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
-	.side-panel-trigger {
+	.top-right-controls {
 		position: fixed;
-		top: 50%;
+		top: 20px;
 		right: 20px;
-		transform: translateY(-50%);
 		z-index: 1000;
-		background: rgba(173, 216, 230, 0.9);
-		border: 1px solid rgba(173, 216, 230, 0.3);
+		display: flex;
+		flex-direction: row;
+		gap: 12px;
+		align-items: center;
+	}
+
+	.side-panel-trigger {
+		background: var(--theme-message-background);
+		border: 1px solid var(--theme-message-border);
 		border-radius: 50%;
 		padding: 15px;
 		cursor: pointer;
 		transition: all 0.3s ease;
 		backdrop-filter: blur(10px);
-		color: rgba(70, 130, 180, 0.9);
+		color: var(--theme-text);
 		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 		width: 54px;
 		height: 54px;
@@ -562,8 +582,8 @@
 	}
 
 	.side-panel-trigger:hover {
-		background: rgba(173, 216, 230, 1);
-		transform: translateY(-50%) scale(1.05);
+		background: var(--theme-primary-light);
+		transform: scale(1.05);
 		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 	}
 
@@ -575,7 +595,7 @@
 		width: 400px;
 		background: rgba(255, 255, 255, 0.95);
 		backdrop-filter: blur(20px);
-		border-left: 1px solid rgba(173, 216, 230, 0.3);
+		border-left: 1px solid var(--theme-message-border);
 		z-index: 1001;
 		transform: translateX(100%);
 		transition: transform 0.3s ease;
@@ -603,12 +623,12 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 20px;
-		border-bottom: 1px solid rgba(173, 216, 230, 0.3);
+		border-bottom: 1px solid var(--theme-message-border);
 	}
 
 	.side-panel-header h2 {
 		margin: 0;
-		color: rgba(70, 130, 180, 0.9);
+		color: var(--theme-text);
 		font-size: 1.5rem;
 		font-weight: 500;
 	}
@@ -618,14 +638,16 @@
 		border: none;
 		cursor: pointer;
 		padding: 8px;
-		color: rgba(70, 130, 180, 0.7);
+		color: var(--theme-text);
+		opacity: 0.7;
 		border-radius: 8px;
 		transition: all 0.2s ease;
 	}
 
 	.close-button:hover {
-		background: rgba(173, 216, 230, 0.3);
-		color: rgba(70, 130, 180, 1);
+		background: var(--theme-primary-light);
+		color: var(--theme-primary-dark);
+		opacity: 1;
 	}
 
 	.side-panel-content {
@@ -638,7 +660,7 @@
 
 	.message-form-section h3 {
 		margin: 0 0 15px 0;
-		color: rgba(70, 130, 180, 0.9);
+		color: var(--theme-text);
 		font-size: 1.2rem;
 		font-weight: 500;
 	}
