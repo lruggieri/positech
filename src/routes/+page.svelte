@@ -561,7 +561,7 @@
 		overflow: hidden;
 	}
 
-	header {
+	main > header {
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -684,11 +684,13 @@
 	}
 
 	.side-panel-header {
+		position: relative;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		padding: 20px;
 		border-bottom: 1px solid rgba(173, 216, 230, 0.3);
+		gap: 15px;
 	}
 
 	.side-panel-header h2 {

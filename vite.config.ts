@@ -4,10 +4,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	server: {
-		port: 8080
+		port: 5173
 	},
 	preview: {
-		port: 8080
+		port: 5173
 	},
 	build: {
 		minify: 'esbuild',
