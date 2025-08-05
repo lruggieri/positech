@@ -595,7 +595,7 @@
 		width: 400px;
 		background: rgba(255, 255, 255, 0.95);
 		backdrop-filter: blur(20px);
-		border-left: 1px solid var(--theme-message-border);
+		border-left: 1px solid rgba(173, 216, 230, 0.3);
 		z-index: 1001;
 		transform: translateX(100%);
 		transition: transform 0.3s ease;
@@ -623,12 +623,12 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 20px;
-		border-bottom: 1px solid var(--theme-message-border);
+		border-bottom: 1px solid rgba(173, 216, 230, 0.3);
 	}
 
 	.side-panel-header h2 {
 		margin: 0;
-		color: var(--theme-text);
+		color: rgba(70, 130, 180, 0.9);
 		font-size: 1.5rem;
 		font-weight: 500;
 	}
@@ -638,16 +638,14 @@
 		border: none;
 		cursor: pointer;
 		padding: 8px;
-		color: var(--theme-text);
-		opacity: 0.7;
+		color: rgba(70, 130, 180, 0.7);
 		border-radius: 8px;
 		transition: all 0.2s ease;
 	}
 
 	.close-button:hover {
-		background: var(--theme-primary-light);
-		color: var(--theme-primary-dark);
-		opacity: 1;
+		background: rgba(173, 216, 230, 0.3);
+		color: rgba(70, 130, 180, 1);
 	}
 
 	.side-panel-content {
@@ -660,7 +658,7 @@
 
 	.message-form-section h3 {
 		margin: 0 0 15px 0;
-		color: var(--theme-text);
+		color: rgba(70, 130, 180, 0.9);
 		font-size: 1.2rem;
 		font-weight: 500;
 	}
